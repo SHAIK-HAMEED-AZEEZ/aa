@@ -53,8 +53,9 @@ app.post('/signup', async (req, res) => {
         res.send("user details already exists")
     }
     else{
-        await LogInCollection.insertMany([data])
         await data.save()
+        await LogInCollection.insertMany([data])
+        
     }
    }
    catch{
