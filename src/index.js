@@ -45,6 +45,7 @@ app.post('/signup', async (req, res) => {
         //name: req.body.name,
       //  password: req.body.password
     //}
+    await data.save()
 
     const checking = await LogInCollection.findOne({ name: req.body.name })
 
@@ -53,7 +54,7 @@ app.post('/signup', async (req, res) => {
         res.send("user details already exists")
     }
     else{
-        await data.save()
+        
         await LogInCollection.insertMany([data])
         
     }
