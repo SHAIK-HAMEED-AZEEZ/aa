@@ -39,7 +39,7 @@ app.post('/signup', async (req, res) => {
          name: req.body.name,
          password: req.body.password
      })
-     await data.save()
+     
 
     //const data = {
         //name: req.body.name,
