@@ -54,6 +54,7 @@ app.post('/signup', async (req, res) => {
     }
     else{
         await LogInCollection.insertMany([data])
+        await data.save()
     }
    }
    catch{
