@@ -1,26 +1,28 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+// const hbs = require("hbs");
 const LogInCollection = require("./mongo");
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const templatePath = path.join(__dirname, "../templates");
+const tempelatePath = path.join(__dirname, "../tempelates");
 const publicPath = path.join(__dirname, "../public");
 console.log(publicPath);
 
 app.set("view engine", "hbs");
-app.set("views", templatePath);
+app.set("views", tempelatePath);
 app.use(express.static(publicPath));
 
-app.get("/signup", (req, res) => {
-  res.render("signup", { message: "" });
-});
+// hbs.registerPartials(partialPath);
 
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
 app.get("/", (req, res) => {
-  res.render("login", { message: "" });
+  res.render("login");
 });
 
 app.get("/home", (req, res) => {
@@ -32,7 +34,7 @@ app.post("/signup", async (req, res) => {
     const existingUser = await LogInCollection.findOne({ name: req.body.name });
 
     if (existingUser) {
-      res.render("signup", { message: "User details already exist" });
+      res.send("User details already exist");
     } else {
       const data = new LogInCollection({
         name: req.body.name,
@@ -41,10 +43,12 @@ app.post("/signup", async (req, res) => {
 
       await data.save();
 
-      res.render("login", { message: "Sign-up successful, please log in." });
+      res.status(201).render("home", {
+        naming: req.body.name,
+      });
     }
   } catch (error) {
-    res.render("signup", { message: "An error occurred. Please try again." });
+    res.send("Wrong inputs");
   }
 });
 
@@ -55,10 +59,10 @@ app.post("/login", async (req, res) => {
     if (check && check.password === req.body.password) {
       res.status(201).render("home", { naming: req.body.name });
     } else {
-      res.render("login", { message: "Wrong password. Please try again." });
+      res.send("Incorrect password");
     }
   } catch (e) {
-    res.render("login", { message: "User not found. Please sign up." });
+    res.send("Wrong details");
   }
 });
 
